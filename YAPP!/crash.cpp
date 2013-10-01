@@ -168,28 +168,28 @@ void player_bullet_crash(Bullet *player_bullet, MapBox (*mapbox)[WIDTH], Enemy *
 	for(i=0; i<enemy_count[0]; i++){
 		if(enemy_check[i] == 1){
 			if(enemy[i].HP == 0){
-				for(j=i; j<enemy_count[0]; j++){
+				for(j=i; j<enemy_count[0]-1; j++){
 					enemy[j].left = enemy[j+1].left;
 					enemy[j].right = enemy[j+1].right;
 					enemy[j].top = enemy[j+1].top;
 					enemy[j].bottom = enemy[j+1].bottom;
 					enemy[j].HP = enemy[j+1].HP;
-					enemy_count[0]--;
 				}
+				enemy_count[0]--;
 			}
 		}
 	}
 	for(i=0; i<player_bullet_count[0]; i++){
 		if(bullet_check[i] == 1){
-			for(j=i; j<player_bullet_count[0]; j++){
+			for(j=i; j<player_bullet_count[0]-1; j++){
 				player_bullet[j].PE = player_bullet[j+1].PE;
 				player_bullet[j].direction = player_bullet[j+1].direction;
 				player_bullet[j].left = player_bullet[j+1].left;
 				player_bullet[j].right = player_bullet[j+1].right;
 				player_bullet[j].top = player_bullet[j+1].top;
-				player_bullet[j].bottom = player_bullet[j+1].bottom;
-				player_bullet_count[0]--;
+				player_bullet[j].bottom = player_bullet[j+1].bottom;	
 			}
+			player_bullet_count[0]--;
 		}
 	}
 }
@@ -213,4 +213,30 @@ void savePoint(int a,int b, int c, int d,Player player[],int *stage,int reset)
 		stage[0]=savestage;
 	}
 
+}
+void Bullet_delete(RECT rt,  Bullet *bullet, int *bullet_count){
+	int bullet_check[P_BULLET_MAX] = {0};
+	int delete_bullet = 0;
+	for(int i=0; i<bullet_count[0]; i++){
+		if((bullet[i].left >= rt.right) ||
+			(bullet[i].right <= rt.left) ||
+			(bullet[i].top >= rt.bottom) ||
+			(bullet[i].bottom <= rt.top)){
+				bullet_check[i] = 1;
+		}
+	}
+	for(int i=0; i<bullet_count[0]; i++){
+		if(bullet_check[i] == 1){
+			for(int j=i; j<bullet_count[0]-1; j++){
+				bullet[j].PE = bullet[j+1].PE;
+				bullet[j].direction = bullet[j+1].direction;
+				bullet[j].left = bullet[j+1].left;
+				bullet[j].right = bullet[j+1].right;
+				bullet[j].top = bullet[j+1].top;
+				bullet[j].bottom = bullet[j+1].bottom;
+				bullet_check[j] = bullet_check[j+1];
+			}
+			bullet_count[0]--;
+		}
+	}
 }

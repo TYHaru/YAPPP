@@ -4,7 +4,8 @@
 #include "gamedef.h"
 
 
-void tuto(Player *player, int *save, char (*map)[WIDTH], TRAP trap[],int * stage, MapBox (*mapbox)[WIDTH], int * reset)
+void tuto(Player *player, int *save, char (*map)[WIDTH], TRAP trap[],int * stage, MapBox (*mapbox)[WIDTH], int * reset, Bullet *player_bullet, int *player_bullet_count, Enemy *enemy,
+		  int *enemy_count)
 {
 	static int first=0;
 	static char c_map[HEIGHT][WIDTH]={
@@ -60,6 +61,7 @@ void tuto(Player *player, int *save, char (*map)[WIDTH], TRAP trap[],int * stage
 	trapf(&trap[0],player,map,mapbox,save);
 	trapf(&trap[1],player,map,mapbox,save);
 	trapf(&trap[2],player,map,mapbox,save);
+	player_bullet_crash(player_bullet, mapbox, enemy, enemy_count, player_bullet_count);
 	if(player[0].top > 660){
 		player[0].life = 0;
 		player[1].life = 0;
@@ -67,6 +69,7 @@ void tuto(Player *player, int *save, char (*map)[WIDTH], TRAP trap[],int * stage
 	FC_Crash(player, map, save, mapbox);
 	insert_map2(c_map, map);
 	//mapCheck2(player, map, save);
+	
 }
 void DrawBlockTuto(HDC hdc,HDC backDC,HDC mapDC, TRAP trap[], int *stage, HINSTANCE hInst, char (*map)[WIDTH])
 {
@@ -146,7 +149,8 @@ void DrawBlockTuto(HDC hdc,HDC backDC,HDC mapDC, TRAP trap[], int *stage, HINSTA
 			DeleteObject(savebit);
 			DeleteDC(saveDC);
 }
-void tuto2(Player *player, int *save, char (*map)[WIDTH], TRAP trap[], int * stage, MapBox (*mapbox)[WIDTH],int *reset)
+void tuto2(Player *player, int *save, char (*map)[WIDTH], TRAP trap[], int * stage, MapBox (*mapbox)[WIDTH],int *reset, Bullet *player_bullet, int *player_bullet_count, 
+		   Enemy *enemy, int *enemy_count)
 {
 	static int first=0;
 	static char c_map[HEIGHT][WIDTH]={
@@ -191,14 +195,15 @@ void tuto2(Player *player, int *save, char (*map)[WIDTH], TRAP trap[], int * sta
 
 		TRAP inst[4]={{a[0],2,1,0,5,8,3,0,4,DUTYPE,MOVE_LIMIT},
 		{a[1],4,3,0,3,18,21,0,6,UDTYPE,MOVE_LIMIT},
-		{a[2],1,1,0,11,18,3,4,3,DUTYPE,MOVE_LIMIT,RE},
-		{a[3],1,1,0,14,18,3,4,3,DUTYPE,MOVE_LIMIT,RE}
+		{a[2],1,1,0,11,18,3,5,3,DUTYPE,MOVE_LIMIT,RE},
+		{a[3],1,1,0,14,18,3,5,3,DUTYPE,MOVE_LIMIT,RE}
 		}; //{인식범위, 사라지는 상자 가로,세로, 카운트(기본 0),x좌표, 시작하는좌표,끝나는좌표,가속도,속도}
 		for(int i=0;i<4;i++)
 			trap[i]=inst[i];
 		first++;
 		reset[0]=0;
 	}
+	
 	if(player[0].top > 660){
 		player[0].life = 0;
 		player[1].life = 0;
@@ -207,11 +212,12 @@ void tuto2(Player *player, int *save, char (*map)[WIDTH], TRAP trap[], int * sta
 	insert_map1(map, mapbox);
 	for(int i=0;i<4;i++)
 		trapf(&trap[i],player,map,mapbox,save);
-	tuto2Set(player,trap,map,mapbox);
+	tuto2Set(player,trap,map,mapbox, enemy, enemy_count);
 	FC_Crash(player, map, save, mapbox); 
+	player_bullet_crash(player_bullet, mapbox, enemy, enemy_count, player_bullet_count);
 	insert_map2(c_map, map);
 }
-void tuto2Set(Player player[], TRAP trap[], char (*map)[WIDTH], MapBox (*mapbox)[WIDTH])
+void tuto2Set(Player player[], TRAP trap[], char (*map)[WIDTH], MapBox (*mapbox)[WIDTH], Enemy *enemy, int *enemy_count)
 {
 	Box reco={18*BOXSIZE,14*BOXSIZE,20*BOXSIZE,18*BOXSIZE};
 	static int count=0;
@@ -259,11 +265,15 @@ void tuto2Set(Player player[], TRAP trap[], char (*map)[WIDTH], MapBox (*mapbox)
 				player[1].life=0;
 			}
 		}
-		bossRaid(player,map,mapbox,trap);
+		bossRaid(player, map, mapbox, trap, enemy, enemy_count);
+		enemy[0].left = trap[5].present.left;
+		enemy[0].right = trap[5].present.right;
+		enemy[0].top = trap[5].present.top;
+		enemy[0].bottom = trap[5].present.bottom;
 	}
 
 }
-void bossRaid(Player player[], char (*map)[WIDTH], MapBox (*mapbox)[WIDTH],TRAP trap[])
+void bossRaid(Player player[], char (*map)[WIDTH], MapBox (*mapbox)[WIDTH],TRAP trap[], Enemy *enemy, int *enemy_count)
 {
 
 	if(trap[5].count==BOSSUP)  // 일정범위에오면 쿠파가 날라옴
@@ -278,6 +288,9 @@ void bossRaid(Player player[], char (*map)[WIDTH], MapBox (*mapbox)[WIDTH],TRAP 
 		trap[5].present.right=630+210;
 		trap[5].present.top=-270;
 		trap[5].present.bottom=20;
+		enemy_count[0] = 1;
+		enemy[0].HP = 10000000; //쿠파 체력
+		
 		map[20][5]='#';
 		mapbox[20][5].value='#';
 		FC_insert(mapbox);
