@@ -126,5 +126,8 @@
     <Image Include="꾸 boss.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="캐릭터 좌측.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
 </Project>

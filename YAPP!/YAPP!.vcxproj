@@ -118,6 +118,7 @@
     <Image Include="용암.bmp" />
     <Image Include="지하타일.bmp" />
     <Image Include="짱 Boss.bmp" />
+    <Image Include="캐릭터 좌측.bmp" />
     <Image Include="케릭터.bmp" />
     <Image Include="타일1.bmp" />
     <Image Include="튜토보스.bmp" />

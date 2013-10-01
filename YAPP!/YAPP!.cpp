@@ -133,8 +133,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static TRAP trap[10];
 	static MapBox mapbox[HEIGHT][WIDTH] = {0};
 	int save[3] = {0};	 //save[0] = ac, save[1] = j_count1, save[2] = j_not
-	HDC hdc, hBitDC, mapDC, backDC, charDC, BulletDC;
-	HBITMAP hBit, mapbit, Bulletbit;
+	HDC hdc, hBitDC, mapDC, backDC, charDC, BulletDC, LcharDC;
+	HBITMAP hBit, mapbit, Bulletbit, Lcharbit;
 	HBITMAP backbitmap;	 //기존에 dc에 저장된 BitMap을 다른곳에 보관 해주면서 새 BitMap을 dc에 저장한다.
 	RECT rt={0,0,900,700};
 	static int player_bullet_direction;
@@ -146,7 +146,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	char B[7] = "bullet";
 	static int menu_arrow[1] = {1}; //1 = 처음하기, 2 = 이어하기, 3 = 끝내기
 	static int die_check = 0;
-	SetTimer(hWnd, BULLET_TIMER_ID, 200, NULL); //총알 타이머
+
+	SetTimer(hWnd, BULLET_TIMER_ID, 100, NULL); //총알 타이머
 
 	save[0] = ac;
 	save[1] = j_count1;
@@ -256,8 +257,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						j_flag=0;
 						j_count1+=1;
 					//	InvalidateRect(hWnd,NULL,false);
-						return false;
 					}
+					return false;
 				case 'X':
 				case 'x':
 					player_bullet[player_bullet_count[0]].direction = player_bullet_direction;
@@ -326,8 +327,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			mapDC = CreateCompatibleDC(hdc);
 			charDC = CreateCompatibleDC(hdc);
 			BulletDC = CreateCompatibleDC(hdc);
-			if(player[0].life==1)
+			LcharDC = CreateCompatibleDC(hdc);
+			if(player[0].life==1){
 				mapbit=LoadBitmap(hInst,MAKEINTRESOURCE(IDB_BITMAP1));
+				Lcharbit = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP19));
+			}
 			else{
 				mapbit=LoadBitmap(hInst,MAKEINTRESOURCE(IDB_BITMAP3));
 				die_check = 1;
@@ -342,6 +346,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			SelectObject(charDC,mapbit);
 			SelectObject(BulletDC, Bulletbit);
 			SelectObject(backDC,hBit);
+			SelectObject(LcharDC, Lcharbit);
 			FillRect(backDC, &rt, (HBRUSH)GetStockObject(WHITE_BRUSH));
 			switch(stage[0]/10)
 			{
@@ -363,7 +368,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				TransparentBlt(backDC, player_bullet[i].left-BOXSIZE, player_bullet[i].top-BOXSIZE, P_BULLETSIZE, P_BULLETSIZE, BulletDC, 0, 0, P_BULLETSIZE, P_BULLETSIZE, RGB(255,255,255));
 				//TextOut(backDC, player_bullet[i].left, player_bullet[i].top, B, strlen(B)); 
 			}
-		TransparentBlt(backDC, player[0].left-BOXSIZE, player[0].top-BOXSIZE, PLAYERSIZE, PLAYERSIZE, charDC, 0, 0,PLAYERSIZE,PLAYERSIZE, RGB(255,255,255));
+			if(player_bullet_direction == EE){
+				TransparentBlt(backDC, player[0].left-BOXSIZE, player[0].top-BOXSIZE, PLAYERSIZE, PLAYERSIZE, charDC, 0, 0,PLAYERSIZE,PLAYERSIZE, RGB(255,255,255));
+			}
+			else{
+				TransparentBlt(backDC, player[0].left-BOXSIZE, player[0].top-BOXSIZE, PLAYERSIZE, PLAYERSIZE, LcharDC, 0, 0,PLAYERSIZE,PLAYERSIZE, RGB(255,255,255));
+			}
 		BitBlt(hdc,0,0,rt.right,rt.bottom,backDC,0,0,SRCCOPY);
 
 // TODO: 여기에 그리기 코드를 추가합니다.
@@ -373,12 +383,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		DeleteObject(hBit);
 		DeleteObject(Bulletbit);
 		DeleteObject(mapbit);
+		DeleteObject(Lcharbit);
 		DeleteDC(hBitDC);
 		DeleteDC(backDC);
 		DeleteDC(BulletDC);
 		DeleteDC(hdc);
 		DeleteDC(mapDC);
 		DeleteDC(charDC);
+		DeleteDC(LcharDC);
+		
 
 		EndPaint(hWnd, &ps);
 		return FALSE;

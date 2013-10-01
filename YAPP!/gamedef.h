@@ -1,3 +1,4 @@
+#pragma comment(lib, "msimg32.lib")
 
 #define		PLAYERSIZE			20
 #define		BOXSIZE				30
