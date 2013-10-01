@@ -146,13 +146,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	char B[7] = "bullet";
 	static int menu_arrow[1] = {1}; //1 = 처음하기, 2 = 이어하기, 3 = 끝내기
 	static int die_check = 0;
+	static int save_stage = MENU;
 
 	SetTimer(hWnd, BULLET_TIMER_ID, 100, NULL); //총알 타이머
 
 	save[0] = ac;
 	save[1] = j_count1;
 	save[2] = j_not;
-
 
 	switch(stage[0])
 	{
@@ -220,6 +220,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				player[0].right += 2;
 			}
 		}
+	}
+	
+	if(stage[0] != save_stage){
+		for(int i=0; i<player_bullet_count[0]; i++){
+			player_bullet[i].direction = 0;
+			player_bullet[i].left = 0;
+			player_bullet[i].right = 0;
+			player_bullet[i].top = 0;
+			player_bullet[i].bottom = 0;
+		}
+		player_bullet_count[0] = 0;
+		save_stage = stage[0];
 	}
 	switch (message)
 	{
@@ -314,6 +326,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 								player_bullet[i].right = player_bullet[i].left + P_BULLETSIZE;
 							}
 						}
+						return false;
 					}
 			}
 

@@ -60,6 +60,10 @@ void tuto(Player *player, int *save, char (*map)[WIDTH], TRAP trap[],int * stage
 	trapf(&trap[0],player,map,mapbox,save);
 	trapf(&trap[1],player,map,mapbox,save);
 	trapf(&trap[2],player,map,mapbox,save);
+	if(player[0].top > 660){
+		player[0].life = 0;
+		player[1].life = 0;
+	}
 	FC_Crash(player, map, save, mapbox);
 	insert_map2(c_map, map);
 	//mapCheck2(player, map, save);
