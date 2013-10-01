@@ -373,10 +373,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					DrawBlockStage1(hdc,backDC,mapDC,trap,stage,hInst,map);
 					break;
 			}
-			if(1<=  player_bullet_count[0])
-			{
-				int i=1;
-			}
 			for(int i=0; i<player_bullet_count[0]; i++){
 				TransparentBlt(backDC, player_bullet[i].left-BOXSIZE, player_bullet[i].top-BOXSIZE, P_BULLETSIZE, P_BULLETSIZE, BulletDC, 0, 0, P_BULLETSIZE, P_BULLETSIZE, RGB(255,255,255));
 				//TextOut(backDC, player_bullet[i].left, player_bullet[i].top, B, strlen(B)); 
