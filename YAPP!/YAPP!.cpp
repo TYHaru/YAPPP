@@ -360,7 +360,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				int i=1;
 			}
 			for(int i=0; i<player_bullet_count[0]; i++){
-				TransparentBlt(backDC, player_bullet[i].left-BOXSIZE, player_bullet[i].top-BOXSIZE, P_BULLETSIZE, P_BULLETSIZE, BulletDC, 
+				TransparentBlt(backDC, player_bullet[i].left-BOXSIZE, player_bullet[i].top-BOXSIZE, P_BULLETSIZE, P_BULLETSIZE, BulletDC, 0, 0, P_BULLETSIZE, P_BULLETSIZE, RGB(255,255,255));
 				//TextOut(backDC, player_bullet[i].left, player_bullet[i].top, B, strlen(B)); 
 			}
 		TransparentBlt(backDC, player[0].left-BOXSIZE, player[0].top-BOXSIZE, PLAYERSIZE, PLAYERSIZE, charDC, 0, 0,PLAYERSIZE,PLAYERSIZE, RGB(255,255,255));

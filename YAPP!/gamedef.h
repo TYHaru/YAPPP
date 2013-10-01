@@ -4,8 +4,6 @@
 #define		P_BULLETSIZE		6
 #define		O_BULLETSIZE		4
 #define		ENEMY_MAX			10
-#define		P_BULLETSIZE		2
-#define		O_BULLETSIZE		4
 #define		P_BULLET_MAX		20		//ÇÃ·¹ÀÌ¾î ÃÑ¾Ë ¼ö Á¦ÇÑ
 #define		O_BULLET_MAX		100		//¸Ê ÃÑ¾Ë ¼ö Á¦ÇÑ
 #define		AC_TIMER_ID			1
