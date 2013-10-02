@@ -150,19 +150,18 @@ void player_bullet_crash(Bullet *player_bullet, MapBox (*mapbox)[WIDTH], Enemy *
 		}
 		for(j=0; j<HEIGHT; j++){
 			for(k=0; k<WIDTH; k++){
-				if(player_bullet[i].left - mapbox[i][j].right < 0){
-					if(player_bullet[i].right - mapbox[i][j].left > 0){
-						if(player_bullet[i].top - mapbox[i][j].bottom < 0){
-							if(player_bullet[i].bottom - mapbox[i][j].top > 0){
-								bullet_check[i] = 1;
+				if(mapbox[j][k].value != ' '){
+					if(player_bullet[i].left - mapbox[j][k].right < 0){
+						if(player_bullet[i].right - mapbox[j][k].left > 0){
+							if(player_bullet[i].top - mapbox[j][k].bottom < 0){
+								if(player_bullet[i].bottom - mapbox[j][k].top > 0){
+									bullet_check[i] = 1;
+								}
 							}
 						}
 					}
 				}
 			}
-		}
-		if(bullet_check[i] == 1){
-			bullet_delete++;
 		}
 	}
 	for(i=0; i<enemy_count[0]; i++){
@@ -174,8 +173,15 @@ void player_bullet_crash(Bullet *player_bullet, MapBox (*mapbox)[WIDTH], Enemy *
 					enemy[j].top = enemy[j+1].top;
 					enemy[j].bottom = enemy[j+1].bottom;
 					enemy[j].HP = enemy[j+1].HP;
+					enemy_check[j] = enemy_check[j+1];
 				}
-				enemy_count[0]--;
+				if(j == --enemy_count[0]){
+					enemy[j].HP = 0;
+					enemy[j].left = 0;
+					enemy[j].right = 0;
+					enemy[j].top = 0;
+					enemy[j].bottom = 0;
+				}
 			}
 		}
 	}
@@ -188,8 +194,16 @@ void player_bullet_crash(Bullet *player_bullet, MapBox (*mapbox)[WIDTH], Enemy *
 				player_bullet[j].right = player_bullet[j+1].right;
 				player_bullet[j].top = player_bullet[j+1].top;
 				player_bullet[j].bottom = player_bullet[j+1].bottom;	
+				bullet_check[j] = bullet_check[j+1];
 			}
-			player_bullet_count[0]--;
+			if(j == --player_bullet_count[0]){
+				player_bullet[j].PE = 0;
+				player_bullet[j].direction = 0;
+				player_bullet[j].left = 0;
+				player_bullet[j].right = 0;
+				player_bullet[j].top = 0;
+				player_bullet[j].bottom = 0;
+			}
 		}
 	}
 }
@@ -205,12 +219,11 @@ void savePoint(int a,int b, int c, int d,Player player[],int *stage,int reset)
 	}
 	if(reset==RESET)
 	{
-		Sleep(1000);
 		player[0]=player[1]=savepoint;
 		for(int i=0; i<2; i++){
 			player[i].life = 1;
 		}
-		stage[0]=savestage;
+		stage[0]=MENU;
 	}
 
 }

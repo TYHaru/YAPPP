@@ -127,7 +127,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static float j_count1=0;
 	static Player player[2]; //player[0]는 현재위치 player[1]은 전위치
 	PAINTSTRUCT ps;
-	static HANDLE hTimer;
+	static HANDLE hTimer, bTimer;
 	static char map[HEIGHT][WIDTH]={};
 	static int stage[1]={MENU}, trapKey[10];
 	static TRAP trap[10];
@@ -139,6 +139,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	RECT rt={0,0,900,700};
 	static int player_bullet_direction;
 	static Bullet player_bullet[P_BULLET_MAX];
+	static Enemy enemy[10];
 	static int player_bullet_count[1] = {0};
 	static int enemy_count[1] = {0};
 	static int reset=0;
@@ -148,7 +149,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static int die_check = 0;
 	static int save_stage = MENU;
 
-	SetTimer(hWnd, BULLET_TIMER_ID, 100, NULL); //총알 타이머
+	
 
 	save[0] = ac;
 	save[1] = j_count1;
@@ -168,22 +169,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case TUTORIAL1:
 			if(die_check == 1){
 			die_check = 0;
-			menu_arrow[0] = 1;
-			menu_select = 0;
-			reset=RESET;
-			stage[0] = MENU;
-		}
-			tuto(player, save, map,trap,stage, mapbox,&reset);
+				menu_arrow[0] = 1;
+				menu_select = 0;
+				reset=RESET;
+				stage[0] = MENU;
+			}
+			tuto(player, save, map,trap,stage, mapbox,&reset, player_bullet, player_bullet_count, enemy, enemy_count);
 			break;
 		case TUTORIAL2:
 			if(die_check == 1){
-			die_check = 0;
-			menu_arrow[0] = 1;
-			menu_select = 0;
-			reset=RESET;
-			stage[0] = MENU;
-		}
-			tuto2(player,save,map,trap, stage, mapbox, &reset);
+				die_check = 0;
+				menu_arrow[0] = 1;
+				menu_select = 0;
+				reset=RESET;
+				stage[0] = MENU;
+			}
+			tuto2(player,save,map,trap, stage, mapbox, &reset, player_bullet, player_bullet_count, enemy, enemy_count);
 			break;
 		case STAGE1_1:
 			stage1(player,save,map,trap, stage, mapbox, &reset);
@@ -221,8 +222,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 		}
 	}
-	
-	if(stage[0] != save_stage){
+	if((stage[0] != save_stage) || player[0].life == 0){
 		for(int i=0; i<player_bullet_count[0]; i++){
 			player_bullet[i].direction = 0;
 			player_bullet[i].left = 0;
@@ -230,14 +230,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			player_bullet[i].top = 0;
 			player_bullet[i].bottom = 0;
 		}
+		for(int i=0; i<enemy_count[0]; i++){
+			enemy[i].HP = 0;
+			enemy[i].left = 0;
+			enemy[i].right = 0;
+			enemy[i].top = 0;
+			enemy[i].bottom = 0;
+		}
 		player_bullet_count[0] = 0;
+		enemy_count[0] = 0;
 		save_stage = stage[0];
 	}
+	Bullet_delete(rt, player_bullet, player_bullet_count);
 	switch (message)
 	{
-
+		
 		case WM_CREATE :
 			hTimer=(HANDLE)SetTimer(hWnd,AC_TIMER_ID,50,NULL);
+			bTimer=(HANDLE)SetTimer(hWnd, BULLET_TIMER_ID, 50, NULL); //총알 타이머
 			return 0;
 
 
@@ -318,11 +328,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					case BULLET_TIMER_ID:
 						for(int i=0; i<player_bullet_count[0]; i++){
 							if(player_bullet[i].direction == WW){
-								player_bullet[i].right -= 10;
+								player_bullet[i].right -= 15;
 								player_bullet[i].left = player_bullet[i].right - P_BULLETSIZE;
 							}
 							else if(player_bullet[i].direction == EE){
-								player_bullet[i].left += 10;
+								player_bullet[i].left += 15;
 								player_bullet[i].right = player_bullet[i].left + P_BULLETSIZE;
 							}
 						}
