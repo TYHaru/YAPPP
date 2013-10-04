@@ -8,16 +8,15 @@ void menu(int *menu_arrow, Player *player, int reset, int *stage, int menu_selec
 		case BEGIN:
 			for(int i=0; i<2; i++){
 				player[i].left = 130;
-				player[i].right = 130+PLAYERSIZE;
-				player[i].top = 130;
-				player[i].bottom = 130+PLAYERSIZE;
+				player[i].right = 130+BOXSIZE;
+				player[i].top = 100;
+				player[i].bottom = 100+BOXSIZE;
 				player[i].life = 1;
 			}
 			stage[0] = TUTORIAL1;
 			break;
 		case SAVE:
-			reset = RESET;
-			savePoint(0, 0, 0, 0, player, stage, reset);
+			savePoint(0, 0, 0, 0, player, stage, RESET);
 			break;
 		case EXIT:
 			exit(0);

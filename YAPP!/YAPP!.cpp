@@ -144,7 +144,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static int enemy_count[1] = {0};
 	static int reset=0;
 	static int menu_select = 0;
-	char B[7] = "bullet";
 	static int menu_arrow[1] = {1}; //1 = 처음하기, 2 = 이어하기, 3 = 끝내기
 	static int die_check = 0;
 	static int save_stage = MENU;
@@ -189,27 +188,33 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 		
 		case TUTORIAL1:
-			if(die_check == 1){
-			die_check = 0;
+			if(die_check == 1 && GetAsyncKeyState('R')<0)
+			{
+				die_check = 0;
 				menu_arrow[0] = 1;
 				menu_select = 0;
-				reset=RESET;
+				reset = RESET;
 				stage[0] = MENU;
 			}
 			tuto(player, save, map,trap,stage, mapbox,&reset, player_bullet, player_bullet_count, enemy, enemy_count, first);
 			break;
 		case TUTORIAL2:
-			if(die_check == 1){
+			if(die_check == 1 && GetAsyncKeyState('R')<0){
 				die_check = 0;
 				menu_arrow[0] = 1;
 				menu_select = 0;
-				reset=RESET;
 				stage[0] = MENU;
 			}
 			tuto2(player,save,map,trap, stage, mapbox, &reset, player_bullet, player_bullet_count, enemy, enemy_count, first);
 			break;
 		case STAGE1_1:
-			stage1(player,save,map,trap, stage, mapbox, &reset, first);
+			if(die_check == 1 && GetAsyncKeyState('R')<0) {
+				die_check = 0;
+				menu_arrow[0] = 1;
+				menu_select = 0;
+				stage[0] = MENU;
+			}
+			stage1(player,save,map,trap, stage, mapbox, &reset, first, player_bullet, player_bullet_count, enemy, enemy_count);
 			break;
 	}
 	
@@ -361,6 +366,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			else{
 				mapbit=LoadBitmap(hInst,MAKEINTRESOURCE(IDB_BITMAP3));
+				Lcharbit = LoadBitmap(hInst, MAKEINTRESOURCE(IDB_BITMAP3));
 				die_check = 1;
 			}
 			if(stage[0]/10==TUTO)
@@ -401,7 +407,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 
 		BitBlt(hdc,0,0,rt.right,rt.bottom,backDC,0,0,SRCCOPY);
-
 // TODO: 여기에 그리기 코드를 추가합니다.
 // SelectObject(hBitDC, hOldBit); 
 // SelectObject(mapDC, holdmap); 

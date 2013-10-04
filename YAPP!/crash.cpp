@@ -220,10 +220,7 @@ void savePoint(int a,int b, int c, int d,Player player[],int *stage,int reset)
 	if(reset==RESET)
 	{
 		player[0]=player[1]=savepoint;
-		for(int i=0; i<2; i++){
-			player[i].life = 1;
-		}
-		stage[0]=MENU;
+		stage[0] = savestage;
 	}
 
 }
