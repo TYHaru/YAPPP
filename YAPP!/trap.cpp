@@ -115,7 +115,7 @@ void trapf(TRAP *trap, Player *player, char (*map)[WIDTH], MapBox (*mapbox)[WIDT
 	}
 
 }
-void clear(int a,int b, int c, int d, Player * player,int * stage, int stagename)
+BOOL clear(int a,int b, int c, int d, Player * player,int * stage, int stagename)
 {
 	Box reco={a,b,c,d};
 
@@ -142,8 +142,9 @@ void clear(int a,int b, int c, int d, Player * player,int * stage, int stagename
 			(*player).top=630-PLAYERSIZE;
 			(*player).bottom=630;
 		}
+		return TRUE;
 	}
-	return;
+	return FALSE;
 }
 BOOL trap_reco(TRAP trap,Player player[],  int save[]) //아직 다 못만듬
 {

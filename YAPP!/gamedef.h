@@ -126,7 +126,7 @@ BOOL LR_Crash(char (*map)[WIDTH], Player *player, MapBox (*mapbox)[WIDTH], int k
 void FC_Crash(Player *player, char (*map)[WIDTH], int *save, MapBox (*mapbox)[WIDTH]); //상하 충돌 함수
 BOOL limit(char (*map)[WIDTH],Player player[], int key);
 void trapf(TRAP *trap, Player *player, char (*map)[WIDTH], MapBox (*mapbox)[WIDTH], int save[]);
-void clear(int a,int b, int c, int d, Player * player,int *stage, int stagename);	//좌위우아래 순으로 초기화
+BOOL clear(int a,int b, int c, int d, Player * player,int *stage, int stagename);	//좌위우아래 순으로 초기화
 void FC_insert(MapBox (*mapbox)[WIDTH]);
 BOOL trap_reco(TRAP trap,Player player[], int save[]);
 void moveLimit(TRAP trap,Player player[], int save[]);
