@@ -5,9 +5,8 @@
 
 
 void tuto(Player *player, int *save, char (*map)[WIDTH], TRAP trap[],int * stage, MapBox (*mapbox)[WIDTH], int * reset, Bullet *player_bullet, int *player_bullet_count, Enemy *enemy,
-		  int *enemy_count)
+		  int *enemy_count, int *first)
 {
-	static int first=0;
 	static char c_map[HEIGHT][WIDTH]={
 	{' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},//0
 	{' ','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#',' '},//1
@@ -36,9 +35,9 @@ void tuto(Player *player, int *save, char (*map)[WIDTH], TRAP trap[],int * stage
 	static char save_map[HEIGHT][WIDTH];
 	clear(930,210,960,270,player,stage,TUTORIAL2);
 	savePoint(4,5,5,6,player,stage,reset[0]);
-	if(first==0)
+	if(first[0]==0)
 		insert_map2(save_map,c_map);
-	if(first==0 || reset[0]==RESET)
+	if(first[0]==0 || reset[0]==RESET)
 	{	
 		insert_map2(c_map,save_map);
 		Box a[3]={{13*BOXSIZE,16*BOXSIZE,16*BOXSIZE,17*BOXSIZE},
@@ -52,7 +51,7 @@ void tuto(Player *player, int *save, char (*map)[WIDTH], TRAP trap[],int * stage
 		trap[0]=inst[0];
 		trap[1]=inst[1];
 		trap[2]=inst[2];
-		first++;
+		first[0]++;
 		reset[0]=0;
 	}
 	insert_map2(map, c_map);
@@ -150,9 +149,8 @@ void DrawBlockTuto(HDC hdc,HDC backDC,HDC mapDC, TRAP trap[], int *stage, HINSTA
 			DeleteDC(saveDC);
 }
 void tuto2(Player *player, int *save, char (*map)[WIDTH], TRAP trap[], int * stage, MapBox (*mapbox)[WIDTH],int *reset, Bullet *player_bullet, int *player_bullet_count, 
-		   Enemy *enemy, int *enemy_count)
+		   Enemy *enemy, int *enemy_count, int *first)
 {
-	static int first=0;
 	static char c_map[HEIGHT][WIDTH]={
 		{' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},//0
 		{' ','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#',' '},//1
@@ -182,9 +180,9 @@ void tuto2(Player *player, int *save, char (*map)[WIDTH], TRAP trap[], int * sta
 	clear(0,210,30,270,player,stage,TUTORIAL1);
 	clear(21*BOXSIZE,21*BOXSIZE,29*BOXSIZE,22*BOXSIZE,player,stage,STAGE1_1);
 	savePoint(2,7,3,8,player,stage,reset[0]);
-	if(first==0)
+	if(first[0]==0)
 		insert_map2(save_map,c_map);
-	if(first==0 || reset[0]==RESET)
+	if(first[0]==0 || reset[0]==RESET)
 	{
 		insert_map2(c_map, save_map);
 		Box a[4]={{5*BOXSIZE,6*BOXSIZE,7*BOXSIZE,8*BOXSIZE},
@@ -200,7 +198,7 @@ void tuto2(Player *player, int *save, char (*map)[WIDTH], TRAP trap[], int * sta
 		}; //{인식범위, 사라지는 상자 가로,세로, 카운트(기본 0),x좌표, 시작하는좌표,끝나는좌표,가속도,속도}
 		for(int i=0;i<4;i++)
 			trap[i]=inst[i];
-		first++;
+		first[0]++;
 		reset[0]=0;
 	}
 	

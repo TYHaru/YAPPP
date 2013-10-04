@@ -63,9 +63,8 @@ void DrawBlockStage1(HDC hdc,HDC backDC,HDC mapDC, TRAP trap[], int *stage, HINS
 		DeleteDC(saveDC);
 		DeleteDC(waterDC);
 }
-void stage1(Player *player, int *save, char (*map)[WIDTH], TRAP trap[], int *stage, MapBox (*mapbox)[WIDTH] , int * reset)
+void stage1(Player *player, int *save, char (*map)[WIDTH], TRAP trap[], int *stage, MapBox (*mapbox)[WIDTH] , int * reset, int *first)
 {
-	static int first=0;
 	static char c_map[HEIGHT][WIDTH]={
 		{' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '},//0
 		{' ','#','#',' ','f','f','f','#','#','#','#','#','#','#','#','#','#','#','#','#','#','f','f','f','f',' ','s','f',' ','#','#',' '},//1
@@ -93,9 +92,9 @@ void stage1(Player *player, int *save, char (*map)[WIDTH], TRAP trap[], int *sta
 	};
 	static char save_map[HEIGHT][WIDTH];
 		savePoint(2,7,3,8,player,stage,reset[0]);
-	if(first==0)
+	if(first[0]==0)
 		insert_map2(save_map,c_map);
-	if(first==0 || reset[0]==RESET)
+	if(first[0]==0 || reset[0]==RESET)
 	{
 		insert_map2(c_map, save_map);
 		reset[0]=0;

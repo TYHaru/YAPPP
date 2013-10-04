@@ -148,12 +148,34 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	static int menu_arrow[1] = {1}; //1 = 처음하기, 2 = 이어하기, 3 = 끝내기
 	static int die_check = 0;
 	static int save_stage = MENU;
+	static int first[1]={0};
 
 	
 
 	save[0] = ac;
 	save[1] = j_count1;
 	save[2] = j_not;
+
+	if((stage[0] != save_stage) || player[0].life == 0){
+		for(int i=0; i<player_bullet_count[0]; i++){
+			player_bullet[i].direction = 0;
+			player_bullet[i].left = 0;
+			player_bullet[i].right = 0;
+			player_bullet[i].top = 0;
+			player_bullet[i].bottom = 0;
+		}
+		for(int i=0; i<enemy_count[0]; i++){
+			enemy[i].HP = 0;
+			enemy[i].left = 0;
+			enemy[i].right = 0;
+			enemy[i].top = 0;
+			enemy[i].bottom = 0;
+		}
+		player_bullet_count[0] = 0;
+		enemy_count[0] = 0;
+		save_stage = stage[0];
+		first[0] = 0;
+	}
 
 	switch(stage[0])
 	{
@@ -174,7 +196,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				reset=RESET;
 				stage[0] = MENU;
 			}
-			tuto(player, save, map,trap,stage, mapbox,&reset, player_bullet, player_bullet_count, enemy, enemy_count);
+			tuto(player, save, map,trap,stage, mapbox,&reset, player_bullet, player_bullet_count, enemy, enemy_count, first);
 			break;
 		case TUTORIAL2:
 			if(die_check == 1){
@@ -184,10 +206,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				reset=RESET;
 				stage[0] = MENU;
 			}
-			tuto2(player,save,map,trap, stage, mapbox, &reset, player_bullet, player_bullet_count, enemy, enemy_count);
+			tuto2(player,save,map,trap, stage, mapbox, &reset, player_bullet, player_bullet_count, enemy, enemy_count, first);
 			break;
 		case STAGE1_1:
-			stage1(player,save,map,trap, stage, mapbox, &reset);
+			stage1(player,save,map,trap, stage, mapbox, &reset, first);
 			break;
 	}
 	
@@ -222,25 +244,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 		}
 	}
-	if((stage[0] != save_stage) || player[0].life == 0){
-		for(int i=0; i<player_bullet_count[0]; i++){
-			player_bullet[i].direction = 0;
-			player_bullet[i].left = 0;
-			player_bullet[i].right = 0;
-			player_bullet[i].top = 0;
-			player_bullet[i].bottom = 0;
-		}
-		for(int i=0; i<enemy_count[0]; i++){
-			enemy[i].HP = 0;
-			enemy[i].left = 0;
-			enemy[i].right = 0;
-			enemy[i].top = 0;
-			enemy[i].bottom = 0;
-		}
-		player_bullet_count[0] = 0;
-		enemy_count[0] = 0;
-		save_stage = stage[0];
-	}
+	
 	Bullet_delete(rt, player_bullet, player_bullet_count);
 	switch (message)
 	{
@@ -383,16 +387,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					DrawBlockStage1(hdc,backDC,mapDC,trap,stage,hInst,map);
 					break;
 			}
+			if(stage[0] != MENU){
 			for(int i=0; i<player_bullet_count[0]; i++){
 				TransparentBlt(backDC, player_bullet[i].left-BOXSIZE, player_bullet[i].top-BOXSIZE, P_BULLETSIZE, P_BULLETSIZE, BulletDC, 0, 0, P_BULLETSIZE, P_BULLETSIZE, RGB(255,255,255));
 				//TextOut(backDC, player_bullet[i].left, player_bullet[i].top, B, strlen(B)); 
 			}
-			if(player_bullet_direction == EE){
-				TransparentBlt(backDC, player[0].left-BOXSIZE, player[0].top-BOXSIZE, PLAYERSIZE, PLAYERSIZE, charDC, 0, 0,PLAYERSIZE,PLAYERSIZE, RGB(255,255,255));
-			}
-			else{
+				if(player_bullet_direction == EE){
+					TransparentBlt(backDC, player[0].left-BOXSIZE, player[0].top-BOXSIZE, PLAYERSIZE, PLAYERSIZE, charDC, 0, 0,PLAYERSIZE,PLAYERSIZE, RGB(255,255,255));
+				}
+				else{
 				TransparentBlt(backDC, player[0].left-BOXSIZE, player[0].top-BOXSIZE, PLAYERSIZE, PLAYERSIZE, LcharDC, 0, 0,PLAYERSIZE,PLAYERSIZE, RGB(255,255,255));
+				}
 			}
+
 		BitBlt(hdc,0,0,rt.right,rt.bottom,backDC,0,0,SRCCOPY);
 
 // TODO: 여기에 그리기 코드를 추가합니다.
